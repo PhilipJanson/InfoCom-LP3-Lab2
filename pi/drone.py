@@ -8,17 +8,21 @@ app = Flask(__name__)
 CORS(app, supports_credentials=True)
 app.secret_key = 'dljsaklqk24e21cjn!Ew@@dsa5'
 
-
 #Give a unique ID for the drone
 #===================================================================
-myID = "DRONE_ID"
+myID = "apa"
 #===================================================================
 
 # Get initial longitude and latitude the drone
 #===================================================================
-current_longitude = 0
-current_latitude = 0
+current_longitude = 13.14
+current_latitude = 55.67
 #===================================================================
+
+file = open("coords.txt", "w")
+temp = str(current_longitude) + "\n" + str(current_latitude) + "\n"
+file.writelines(temp)
+file.close()
 
 drone_info = {'id': myID,
                 'longitude': current_longitude,
@@ -28,7 +32,7 @@ drone_info = {'id': myID,
 
 # Fill in the IP address of server, and send the initial location of the drone to the SERVER
 #===================================================================
-SERVER="http://SERVER_IP:PORT/drone"
+SERVER="http://192.168.1.5:5000/drone"
 with requests.Session() as session:
     resp = session.post(SERVER, json=drone_info)
 #===================================================================
@@ -36,11 +40,14 @@ with requests.Session() as session:
 @app.route('/', methods=['POST'])
 def main():
     coords = request.json
+    file = open("coords.txt", "r")
+
     # Get current longitude and latitude of the drone 
     #===================================================================
-    current_longitude = 0
-    current_latitude = 0
-    #===================================================================
+    current_longitude = file.readline().strip()
+    current_latitude = file.readline().strip()
+    #===================================================================  
+
     from_coord = coords['from']
     to_coord = coords['to']
     subprocess.Popen(["python3", "simulator.py", '--clong', str(current_longitude), '--clat', str(current_latitude),

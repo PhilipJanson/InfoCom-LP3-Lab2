@@ -51,7 +51,7 @@ def run(id, current_coords, from_coords, to_coords, SERVER_URL):
 if __name__ == "__main__":
     # Fill in the IP address of server, in order to location of the drone to the SERVER
     #===================================================================
-    SERVER_URL = "http://SERVER_IP:PORT/drone"
+    SERVER_URL = "http://192.168.1.5:5000/drone"
     #===================================================================
 
     parser = argparse.ArgumentParser()
@@ -72,3 +72,9 @@ if __name__ == "__main__":
     drone_long, drone_lat = run(args.id ,current_coords, from_coords, to_coords, SERVER_URL)
     # drone_long and drone_lat is the final location when drlivery is completed, find a way save the value, and use it for the initial coordinates of next delivery
     #=============================================================================
+
+    file = open("coords.txt", "w")
+    temp = str(drone_long) + "\n" + str(drone_lat) + "\n"
+    file.writelines(temp)
+    file.close()
+
